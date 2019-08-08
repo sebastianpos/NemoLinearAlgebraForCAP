@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "NemoLinearAlgebraForCAP",
 Subtitle := "Category of Matrices over a Nemo-Field for CAP",
-Version := "0.1",
-Date := "22/05/2018", # dd/mm/yyyy format
+Version := "0.2",
+Date := "08/08/2019", # dd/mm/yyyy format
 
 Persons := [
   rec(

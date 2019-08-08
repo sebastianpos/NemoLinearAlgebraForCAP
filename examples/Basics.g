@@ -64,7 +64,7 @@ unit := TensorUnit( vec );
 #! @EndExample
 
 #! The following construction is based on constructors provided by Thomas Breuer
-#! that can currently be found in the JuliaExperimental 0.1 package (as of 05/22/18)
+#! that can currently be found in the JuliaExperimental 0.2 package (as of 09/08/19)
 #! @Example
 x:= X( Rationals );;
 F:= AlgebraicExtension( Rationals, x^2+1 );;
