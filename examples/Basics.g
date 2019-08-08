@@ -69,14 +69,14 @@ unit := TensorUnit( vec );
 x:= X( Rationals );;
 F:= AlgebraicExtension( Rationals, x^2+1 );;
 z:= Zero( F );;  o:= One( F );;  a:= RootOfDefiningPolynomial( F );;
-FF:= Nemo_Field( F );;
-vec := NemoMatrixCategory( JuliaPointer( FF ) );
+FF:= ContextGAPNemo( F );;
+vec := NemoMatrixCategory( FF!.JuliaDomainPointer );
 #! Category of Nemo vector spaces
 W := NemoVectorSpaceObject( 2, vec );
 #! <An object in Category of Nemo vector spaces>
 mat:= [ [ o, a/2 ], [ z, o ] ];
 #! [ [ !1, 1/2*a ], [ !0, !1 ] ]
-nmat:= NemoMatrix( FF, mat );
+nmat:= GAPToNemo( FF, mat );
 #! <<Julia: [1 1//2*a]
 #! [0 1]>>
 start := NemoVectorSpaceMorphism( W, nmat, W );

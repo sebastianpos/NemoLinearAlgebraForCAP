@@ -68,8 +68,14 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := ">= 4.9.1",
-  NeededOtherPackages := [ [ "JuliaExperimental", ">= 0.1" ] ],
-  SuggestedOtherPackages := [ [ "CAP", ">= 2018.02.27" ] ],
+  NeededOtherPackages := [ [ "JuliaExperimental", ">= 0.1" ],
+                           [ "GAPDoc", ">= 1.5" ],
+                           [ "ToolsForHomalg", ">=2015.09.18" ],
+                           [ "MatricesForHomalg", ">= 2018.02.04" ],
+                           [ "CAP", ">= 2019.01.16" ],
+                           [ "MonoidalCategories", ">= 2019.01.16" ],
+                           ],
+  SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 

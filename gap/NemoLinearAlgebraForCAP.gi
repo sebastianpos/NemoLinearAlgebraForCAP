@@ -67,7 +67,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
 
     julia_nullspace := Julia.Nemo.nullspace;
 
-    julia_cansolve := Julia.Hecke.cansolve;
+    julia_cansolve := Julia.Hecke.can_solve;
 
     julia_identity_matrix := Julia.Nemo.identity_matrix;
 
@@ -99,8 +99,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     AddIsCongruentForMorphisms( category,
       function( alpha, beta )
         
-        return JuliaUnbox( Julia.Nemo.("==")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) )
-        );
+        return Julia.Nemo.("==")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
         
     end );
 
@@ -316,7 +315,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
 
         kernel_object :=
             NemoVectorSpaceObject( 
-                JuliaUnbox( julia_getindex( kernel_emb, 1 ) ),
+                julia_getindex( kernel_emb, 1 ),
                 category
             );
 
@@ -341,7 +340,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
 
         ## tests if there is no solution
-        if JuliaUnbox( julia_getindex( right_divide, 1 ) ) = false then
+        if julia_getindex( right_divide, 1 ) = false then
           
           return fail;
           
@@ -362,7 +361,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         cokernel_proj := julia_nullspace( UnderlyingMatrix( morphism ) );
         
-        cokernel_obj := NemoVectorSpaceObject( JuliaUnbox( julia_getindex( cokernel_proj, 1 ) ),
+        cokernel_obj := NemoVectorSpaceObject( julia_getindex( cokernel_proj, 1 ),
                                                category 
                         );
         
@@ -380,7 +379,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         left_divide := julia_cansolve( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
         
         ## tests if there is no solution
-        if JuliaUnbox( julia_getindex( left_divide, 1 ) ) = false then
+        if julia_getindex( left_divide, 1 ) = false then
           
           return fail;
           
