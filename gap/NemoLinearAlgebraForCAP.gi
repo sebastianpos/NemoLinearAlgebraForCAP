@@ -95,7 +95,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
 
         return NemoVectorSpaceMorphism(
                 Source( alpha ),
-                Julia.Nemo.("\*")(UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
+                Julia.Nemo.("*")(UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
                 Range( beta )
         );
 
@@ -107,7 +107,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         return NemoVectorSpaceMorphism( 
                 Source( alpha ),
-                Julia.Nemo.("\+")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
+                Julia.Nemo.("+")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
                 Range( beta ) 
         );
         
@@ -119,7 +119,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         return NemoVectorSpaceMorphism( 
                 Source( alpha ),
-                Julia.Nemo.("\-")( UnderlyingMatrix( alpha ) ),
+                Julia.Nemo.("-")( UnderlyingMatrix( alpha ) ),
                 Range( alpha ) 
         );
         
