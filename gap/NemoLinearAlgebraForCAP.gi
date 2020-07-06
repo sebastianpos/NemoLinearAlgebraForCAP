@@ -380,20 +380,16 @@ InstallMethodWithCache( NemoVectorSpaceObject,
                         [ IsInt, IsCapCategory ],
                
   function( dimension, category )
-    local vector_space_object;
-
+    #% CAP_JIT_RESOLVE_FUNCTION
+    
     if dimension < 0 then
         
         Error( "first argument must be a non-negative integer" );
         
     fi;
     
-    vector_space_object := rec( );
-    
-    ObjectifyObjectForCAPWithAttributes( vector_space_object, category,
-                                         Dimension, dimension );
-    
-    return vector_space_object;
+    return ObjectifyObjectForCAPWithAttributes( rec(), category,
+                                                Dimension, dimension );
     
 end );
 
@@ -411,7 +407,8 @@ InstallMethod( NemoVectorSpaceMorphism,
                [ IsNemoVectorSpaceObject, IsJuliaObject, IsNemoVectorSpaceObject ],
                
   function( source, matrix, range )
-    local vector_space_morphism, homalg_field, category;
+    local category;
+    #% CAP_JIT_RESOLVE_FUNCTION
     
     category := CapCategory( source );
     
@@ -421,15 +418,11 @@ InstallMethod( NemoVectorSpaceMorphism,
         
     fi;
     
-    vector_space_morphism := rec( );
-    
-    ObjectifyMorphismForCAPWithAttributes( vector_space_morphism, category,
-                                           Source, source,
-                                           Range, range,
-                                           UnderlyingMatrix, matrix
+    return ObjectifyMorphismWithSourceAndRangeForCAPWithAttributes( rec(), category,
+                                                                    source,
+                                                                    range,
+                                                                    UnderlyingMatrix, matrix
     );
-    
-    return vector_space_morphism;
     
 end );
 
