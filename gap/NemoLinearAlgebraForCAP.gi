@@ -408,9 +408,9 @@ InstallMethodWithCache( NemoVectorSpaceObject,
     local vector_space_object;
 
     if dimension < 0 then
-      
-      return Error( "first argument must be a non-negative integer" );
-      
+        
+        Error( "first argument must be a non-negative integer" );
+        
     fi;
     
     vector_space_object := rec( );
@@ -441,9 +441,9 @@ InstallMethod( NemoVectorSpaceMorphism,
     category := CapCategory( source );
     
     if not IsIdenticalObj( category, CapCategory( range ) ) then
-      
-      return Error( "source and range are not defined over identical categories" );
-      
+        
+        Error( "source and range are not defined over identical categories" );
+        
     fi;
     
     vector_space_morphism := rec( );
