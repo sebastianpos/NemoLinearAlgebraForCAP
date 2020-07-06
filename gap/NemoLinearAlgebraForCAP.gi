@@ -200,14 +200,8 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         dim_factor := Dimension( object_list[ projection_number ] );
         
         projection_in_factor := 
-            Julia.Nemo.zero_matrix( nemo_field, dim_pre, dim_factor );
-        
-        projection_in_factor := 
-            Julia.Nemo.vcat( projection_in_factor, 
-                             Julia.Nemo.identity_matrix( nemo_field, dim_factor ) );
-        
-        projection_in_factor := 
-            Julia.Nemo.vcat( projection_in_factor, 
+            Julia.Nemo.vcat( Julia.Nemo.zero_matrix( nemo_field, dim_pre, dim_factor ), 
+                             Julia.Nemo.identity_matrix( nemo_field, dim_factor ),
                              Julia.Nemo.zero_matrix( nemo_field, dim_post, dim_factor ) );
         
         return NemoVectorSpaceMorphism( direct_sum_object, projection_in_factor, object_list[ projection_number ] );
@@ -219,14 +213,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( diagram, sink, direct_sum )
         local underlying_matrix_of_universal_morphism, morphism;
         
-        underlying_matrix_of_universal_morphism := UnderlyingMatrix( sink[1] );
-        
-        for morphism in sink{ [ 2 .. Length( sink ) ] } do
-          
-          underlying_matrix_of_universal_morphism := 
-            Julia.Nemo.hcat( underlying_matrix_of_universal_morphism, UnderlyingMatrix( morphism ) );
-          
-        od;
+        underlying_matrix_of_universal_morphism := CallFuncList( Julia.Nemo.hcat, List( sink, s -> UnderlyingMatrix( s ) ) );
         
         return NemoVectorSpaceMorphism( Source( sink[1] ), underlying_matrix_of_universal_morphism, direct_sum );
       
@@ -245,14 +232,9 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         dim_cofactor := Dimension( object_list[ injection_number ] );
         
-        injection_of_cofactor := Julia.Nemo.zero_matrix( nemo_field, dim_cofactor, dim_pre );
-        
         injection_of_cofactor := 
-            Julia.Nemo.hcat( injection_of_cofactor, 
-                             Julia.Nemo.identity_matrix( nemo_field, dim_cofactor ) );
-        
-        injection_of_cofactor := 
-            Julia.Nemo.hcat( injection_of_cofactor, 
+            Julia.Nemo.hcat( Julia.Nemo.zero_matrix( nemo_field, dim_cofactor, dim_pre ), 
+                             Julia.Nemo.identity_matrix( nemo_field, dim_cofactor ),
                              Julia.Nemo.zero_matrix( nemo_field, dim_cofactor, dim_post ) );
         
         return NemoVectorSpaceMorphism( object_list[ injection_number ], injection_of_cofactor, coproduct );
@@ -264,14 +246,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( diagram, sink, coproduct )
         local underlying_matrix_of_universal_morphism, morphism;
         
-        underlying_matrix_of_universal_morphism := UnderlyingMatrix( sink[1] );
-        
-        for morphism in sink{ [ 2 .. Length( sink ) ] } do
-          
-          underlying_matrix_of_universal_morphism := 
-            Julia.Nemo.vcat( underlying_matrix_of_universal_morphism, UnderlyingMatrix( morphism ) );
-          
-        od;
+        underlying_matrix_of_universal_morphism := CallFuncList( Julia.Nemo.vcat, List( sink, s -> UnderlyingMatrix( s ) ) );
         
         return NemoVectorSpaceMorphism( coproduct, underlying_matrix_of_universal_morphism, Range( sink[1] ) );
         
