@@ -280,21 +280,21 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddKernelEmbedding( category,
       function( morphism )
-        local kernel_emb, kernel_object;
+        local kernel_emb_pair, kernel_object, kernel_emb;
         
-        kernel_emb := Julia.Nemo.nullspace( 
+        kernel_emb_pair := Julia.Nemo.nullspace( 
                         Julia.Nemo.transpose( UnderlyingMatrix( morphism ) )
                       );
 
         kernel_object :=
             NemoVectorSpaceObject( 
-                Julia.Base.getindex( kernel_emb, 1 ),
+                Julia.Base.getindex( kernel_emb_pair, 1 ),
                 category
             );
 
         kernel_emb := 
             Julia.Nemo.transpose(
-                Julia.Base.getindex( kernel_emb, 2 )
+                Julia.Base.getindex( kernel_emb_pair, 2 )
             );
         
         return NemoVectorSpaceMorphism( kernel_object, kernel_emb, Source( morphism ) );
@@ -304,22 +304,22 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddLift( category,
       function( alpha, beta )
-        local right_divide, sol_exists;
+        local right_divide_pair, right_divide;
         
-        right_divide := 
+        right_divide_pair := 
               Julia.Hecke.can_solve(
                 Julia.Nemo.transpose( UnderlyingMatrix( beta ) ), Julia.Nemo.transpose( UnderlyingMatrix( alpha ) )
               );
         
 
         ## tests if there is no solution
-        if Julia.Base.getindex( right_divide, 1 ) = false then
+        if Julia.Base.getindex( right_divide_pair, 1 ) = false then
           
           return fail;
           
         fi;
         
-        right_divide := Julia.Nemo.transpose( Julia.Base.getindex( right_divide, 2 ) );
+        right_divide := Julia.Nemo.transpose( Julia.Base.getindex( right_divide_pair, 2 ) );
         
         return NemoVectorSpaceMorphism( Source( alpha ),
                                     right_divide,
@@ -330,15 +330,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddCokernelProjection( category,
       function( morphism )
-        local cokernel_proj, cokernel_obj;
+        local cokernel_proj_pair, cokernel_obj, cokernel_proj;
         
-        cokernel_proj := Julia.Nemo.nullspace( UnderlyingMatrix( morphism ) );
+        cokernel_proj_pair := Julia.Nemo.nullspace( UnderlyingMatrix( morphism ) );
         
-        cokernel_obj := NemoVectorSpaceObject( Julia.Base.getindex( cokernel_proj, 1 ),
+        cokernel_obj := NemoVectorSpaceObject( Julia.Base.getindex( cokernel_proj_pair, 1 ),
                                                category 
                         );
         
-        cokernel_proj := Julia.Base.getindex( cokernel_proj, 2 );
+        cokernel_proj := Julia.Base.getindex( cokernel_proj_pair, 2 );
         
         return NemoVectorSpaceMorphism( Range( morphism ), cokernel_proj, cokernel_obj );
         
@@ -347,18 +347,18 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddColift( category,
       function( alpha, beta )
-        local left_divide;
+        local left_divide_pair, left_divide;
         
-        left_divide := Julia.Hecke.can_solve( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
+        left_divide_pair := Julia.Hecke.can_solve( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
         
         ## tests if there is no solution
-        if Julia.Base.getindex( left_divide, 1 ) = false then
+        if Julia.Base.getindex( left_divide_pair, 1 ) = false then
           
           return fail;
           
         fi;
         
-        left_divide := Julia.Base.getindex( left_divide, 2 );
+        left_divide := Julia.Base.getindex( left_divide_pair, 2 );
         
         return NemoVectorSpaceMorphism( Range( alpha ),
                                         left_divide,
