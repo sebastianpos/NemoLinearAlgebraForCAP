@@ -8,11 +8,9 @@
 #############################################################################
 
 ## import Base first
-ImportJuliaModuleIntoGAP( "Base" );
+JuliaEvalString( "using Hecke" );
 
-ImportJuliaModuleIntoGAP( "Hecke" );
-
-ImportJuliaModuleIntoGAP( "Nemo" );
+JuliaEvalString( "using Nemo" );
 
 ####################################
 ##

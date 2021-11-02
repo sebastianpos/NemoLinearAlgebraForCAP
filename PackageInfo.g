@@ -10,7 +10,7 @@ SetPackageInfo( rec(
 
 PackageName := "NemoLinearAlgebraForCAP",
 Subtitle := "Category of Matrices over a Nemo-Field for CAP",
-Version := "0.3",
+Version := "0.4",
 Date := "01/11/2021", # dd/mm/yyyy format
 
 Persons := [
@@ -68,7 +68,7 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := ">= 4.9.1",
-  NeededOtherPackages := [ [ "JuliaExperimental", ">= 0.1" ],
+  NeededOtherPackages := [ [ "JuliaExperimental", ">= 0.7" ],
                            [ "GAPDoc", ">= 1.5" ],
                            [ "ToolsForHomalg", ">=2015.09.18" ],
                            [ "MatricesForHomalg", ">= 2018.02.04" ],
