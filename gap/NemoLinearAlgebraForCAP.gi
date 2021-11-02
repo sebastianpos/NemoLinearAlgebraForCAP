@@ -8,11 +8,9 @@
 #############################################################################
 
 ## import Base first
-ImportJuliaModuleIntoGAP( "Base" );
+JuliaEvalString( "using Hecke" );
 
-ImportJuliaModuleIntoGAP( "Hecke" );
-
-ImportJuliaModuleIntoGAP( "Nemo" );
+JuliaEvalString( "using Nemo" );
 
 ####################################
 ##
@@ -475,9 +473,9 @@ InstallMethod( NemoVectorSpaceMorphism,
     
     vector_space_morphism := rec( );
     
-    ObjectifyMorphismForCAPWithAttributes( vector_space_morphism, category,
-                                           Source, source,
-                                           Range, range,
+    ObjectifyMorphismWithSourceAndRangeForCAPWithAttributes( vector_space_morphism, category,
+                                           source,
+                                           range,
                                            UnderlyingMatrix, matrix
     );
     
