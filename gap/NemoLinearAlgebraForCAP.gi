@@ -51,33 +51,6 @@ end );
 InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
   
   function( category, nemo_field )
-    local julia_transpose,
-          julia_getindex,
-          julia_nullspace,
-          julia_cansolve,
-          julia_identity_matrix,
-          julia_zero_matrix,
-          julia_vcat,
-          julia_hcat,
-          julia_kronecker_product;
-
-    julia_getindex := Julia.Base.getindex;
-
-    julia_transpose := Julia.Nemo.transpose;
-
-    julia_nullspace := Julia.Nemo.nullspace;
-
-    julia_cansolve := Julia.Hecke.can_solve;
-
-    julia_identity_matrix := Julia.Nemo.identity_matrix;
-
-    julia_zero_matrix := Julia.Nemo.zero_matrix;
-
-    julia_vcat := Julia.Nemo.vcat;
-
-    julia_hcat := Julia.Nemo.hcat;
-
-    julia_kronecker_product := Julia.Hecke.kronecker_product;
 
     ##
     AddIsEqualForCacheForObjects( category,
@@ -109,7 +82,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( object )
         local matrix;
         
-        matrix := julia_identity_matrix( nemo_field, Dimension( object ) );
+        matrix := Julia.Nemo.identity_matrix( nemo_field, Dimension( object ) );
 
         return NemoVectorSpaceMorphism( object, matrix, object );
         
@@ -122,7 +95,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
 
         return NemoVectorSpaceMorphism(
                 Source( alpha ),
-                Julia.Nemo.("\*")(UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
+                Julia.Nemo.("*")(UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
                 Range( beta )
         );
 
@@ -134,7 +107,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         return NemoVectorSpaceMorphism( 
                 Source( alpha ),
-                Julia.Nemo.("\+")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
+                Julia.Nemo.("+")( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) ),
                 Range( beta ) 
         );
         
@@ -146,7 +119,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         return NemoVectorSpaceMorphism( 
                 Source( alpha ),
-                Julia.Nemo.("\-")( UnderlyingMatrix( alpha ) ),
+                Julia.Nemo.("-")( UnderlyingMatrix( alpha ) ),
                 Range( alpha ) 
         );
         
@@ -158,7 +131,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         return NemoVectorSpaceMorphism( 
                 source,
-                julia_zero_matrix( nemo_field, Dimension( source ), Dimension( range ) ),
+                Julia.Nemo.zero_matrix( nemo_field, Dimension( source ), Dimension( range ) ),
                 range 
         );
         
@@ -179,7 +152,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         morphism := NemoVectorSpaceMorphism( 
                         sink, 
-                        julia_zero_matrix( nemo_field, Dimension( sink ), 0 ), 
+                        Julia.Nemo.zero_matrix( nemo_field, Dimension( sink ), 0 ), 
                         zero_object 
         );
         
@@ -194,7 +167,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         morphism := NemoVectorSpaceMorphism( 
                         zero_object, 
-                        julia_zero_matrix( nemo_field, 0, Dimension( source ) ), 
+                        Julia.Nemo.zero_matrix( nemo_field, 0, Dimension( source ) ), 
                         source 
         );
         
@@ -227,15 +200,9 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         dim_factor := Dimension( object_list[ projection_number ] );
         
         projection_in_factor := 
-            julia_zero_matrix( nemo_field, dim_pre, dim_factor );
-        
-        projection_in_factor := 
-            julia_vcat( projection_in_factor, 
-                             julia_identity_matrix( nemo_field, dim_factor ) );
-        
-        projection_in_factor := 
-            julia_vcat( projection_in_factor, 
-                             julia_zero_matrix( nemo_field, dim_post, dim_factor ) );
+            Julia.Nemo.vcat( Julia.Nemo.zero_matrix( nemo_field, dim_pre, dim_factor ), 
+                             Julia.Nemo.identity_matrix( nemo_field, dim_factor ),
+                             Julia.Nemo.zero_matrix( nemo_field, dim_post, dim_factor ) );
         
         return NemoVectorSpaceMorphism( direct_sum_object, projection_in_factor, object_list[ projection_number ] );
         
@@ -246,14 +213,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( diagram, sink, direct_sum )
         local underlying_matrix_of_universal_morphism, morphism;
         
-        underlying_matrix_of_universal_morphism := UnderlyingMatrix( sink[1] );
-        
-        for morphism in sink{ [ 2 .. Length( sink ) ] } do
-          
-          underlying_matrix_of_universal_morphism := 
-            Julia.Nemo.hcat( underlying_matrix_of_universal_morphism, UnderlyingMatrix( morphism ) );
-          
-        od;
+        underlying_matrix_of_universal_morphism := CallFuncList( Julia.Nemo.hcat, List( sink, s -> UnderlyingMatrix( s ) ) );
         
         return NemoVectorSpaceMorphism( Source( sink[1] ), underlying_matrix_of_universal_morphism, direct_sum );
       
@@ -272,15 +232,10 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
         
         dim_cofactor := Dimension( object_list[ injection_number ] );
         
-        injection_of_cofactor := julia_zero_matrix( nemo_field, dim_cofactor, dim_pre );
-        
         injection_of_cofactor := 
-            julia_hcat( injection_of_cofactor, 
-                             julia_identity_matrix( nemo_field, dim_cofactor ) );
-        
-        injection_of_cofactor := 
-            julia_hcat( injection_of_cofactor, 
-                             julia_zero_matrix( nemo_field, dim_cofactor, dim_post ) );
+            Julia.Nemo.hcat( Julia.Nemo.zero_matrix( nemo_field, dim_cofactor, dim_pre ), 
+                             Julia.Nemo.identity_matrix( nemo_field, dim_cofactor ),
+                             Julia.Nemo.zero_matrix( nemo_field, dim_cofactor, dim_post ) );
         
         return NemoVectorSpaceMorphism( object_list[ injection_number ], injection_of_cofactor, coproduct );
 
@@ -291,14 +246,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( diagram, sink, coproduct )
         local underlying_matrix_of_universal_morphism, morphism;
         
-        underlying_matrix_of_universal_morphism := UnderlyingMatrix( sink[1] );
-        
-        for morphism in sink{ [ 2 .. Length( sink ) ] } do
-          
-          underlying_matrix_of_universal_morphism := 
-            julia_vcat( underlying_matrix_of_universal_morphism, UnderlyingMatrix( morphism ) );
-          
-        od;
+        underlying_matrix_of_universal_morphism := CallFuncList( Julia.Nemo.vcat, List( sink, s -> UnderlyingMatrix( s ) ) );
         
         return NemoVectorSpaceMorphism( coproduct, underlying_matrix_of_universal_morphism, Range( sink[1] ) );
         
@@ -307,21 +255,21 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddKernelEmbedding( category,
       function( morphism )
-        local kernel_emb, kernel_object;
+        local kernel_emb_pair, kernel_object, kernel_emb;
         
-        kernel_emb := julia_nullspace( 
-                        julia_transpose( UnderlyingMatrix( morphism ) )
+        kernel_emb_pair := Julia.Nemo.nullspace( 
+                        Julia.Nemo.transpose( UnderlyingMatrix( morphism ) )
                       );
 
         kernel_object :=
             NemoVectorSpaceObject( 
-                julia_getindex( kernel_emb, 1 ),
+                Julia.Base.getindex( kernel_emb_pair, 1 ),
                 category
             );
 
         kernel_emb := 
-            julia_transpose(
-                julia_getindex( kernel_emb, 2 )
+            Julia.Nemo.transpose(
+                Julia.Base.getindex( kernel_emb_pair, 2 )
             );
         
         return NemoVectorSpaceMorphism( kernel_object, kernel_emb, Source( morphism ) );
@@ -331,22 +279,22 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddLift( category,
       function( alpha, beta )
-        local right_divide, sol_exists;
+        local right_divide_pair, right_divide;
         
-        right_divide := 
-              julia_cansolve(
-                julia_transpose( UnderlyingMatrix( beta ) ), julia_transpose( UnderlyingMatrix( alpha ) )
+        right_divide_pair := 
+              Julia.Hecke.can_solve(
+                Julia.Nemo.transpose( UnderlyingMatrix( beta ) ), Julia.Nemo.transpose( UnderlyingMatrix( alpha ) )
               );
         
 
         ## tests if there is no solution
-        if julia_getindex( right_divide, 1 ) = false then
+        if Julia.Base.getindex( right_divide_pair, 1 ) = false then
           
           return fail;
           
         fi;
         
-        right_divide := julia_transpose( julia_getindex( right_divide, 2 ) );
+        right_divide := Julia.Nemo.transpose( Julia.Base.getindex( right_divide_pair, 2 ) );
         
         return NemoVectorSpaceMorphism( Source( alpha ),
                                     right_divide,
@@ -357,15 +305,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddCokernelProjection( category,
       function( morphism )
-        local cokernel_proj, cokernel_obj;
+        local cokernel_proj_pair, cokernel_obj, cokernel_proj;
         
-        cokernel_proj := julia_nullspace( UnderlyingMatrix( morphism ) );
+        cokernel_proj_pair := Julia.Nemo.nullspace( UnderlyingMatrix( morphism ) );
         
-        cokernel_obj := NemoVectorSpaceObject( julia_getindex( cokernel_proj, 1 ),
+        cokernel_obj := NemoVectorSpaceObject( Julia.Base.getindex( cokernel_proj_pair, 1 ),
                                                category 
                         );
         
-        cokernel_proj := julia_getindex( cokernel_proj, 2 );
+        cokernel_proj := Julia.Base.getindex( cokernel_proj_pair, 2 );
         
         return NemoVectorSpaceMorphism( Range( morphism ), cokernel_proj, cokernel_obj );
         
@@ -374,18 +322,18 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
     ##
     AddColift( category,
       function( alpha, beta )
-        local left_divide;
+        local left_divide_pair, left_divide;
         
-        left_divide := julia_cansolve( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
+        left_divide_pair := Julia.Hecke.can_solve( UnderlyingMatrix( alpha ), UnderlyingMatrix( beta ) );
         
         ## tests if there is no solution
-        if julia_getindex( left_divide, 1 ) = false then
+        if Julia.Base.getindex( left_divide_pair, 1 ) = false then
           
           return fail;
           
         fi;
         
-        left_divide := julia_getindex( left_divide, 2 );
+        left_divide := Julia.Base.getindex( left_divide_pair, 2 );
         
         return NemoVectorSpaceMorphism( Range( alpha ),
                                         left_divide,
@@ -418,7 +366,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_NEMO_MATRIX_CATEGORY,
       function( new_source, morphism_1, morphism_2, new_range )
         
         return NemoVectorSpaceMorphism( new_source,
-                                        julia_kronecker_product( UnderlyingMatrix( morphism_1 ), UnderlyingMatrix( morphism_2 ) ),
+                                        Julia.Hecke.kronecker_product( UnderlyingMatrix( morphism_1 ), UnderlyingMatrix( morphism_2 ) ),
                                         new_range );
         
     end );
@@ -432,20 +380,16 @@ InstallMethodWithCache( NemoVectorSpaceObject,
                         [ IsInt, IsCapCategory ],
                
   function( dimension, category )
-    local vector_space_object;
-
+    #% CAP_JIT_RESOLVE_FUNCTION
+    
     if dimension < 0 then
-      
-      return Error( "first argument must be a non-negative integer" );
-      
+        
+        Error( "first argument must be a non-negative integer" );
+        
     fi;
     
-    vector_space_object := rec( );
-    
-    ObjectifyObjectForCAPWithAttributes( vector_space_object, category,
-                                         Dimension, dimension );
-    
-    return vector_space_object;
+    return ObjectifyObjectForCAPWithAttributes( rec(), category,
+                                                Dimension, dimension );
     
 end );
 
@@ -463,25 +407,22 @@ InstallMethod( NemoVectorSpaceMorphism,
                [ IsNemoVectorSpaceObject, IsJuliaObject, IsNemoVectorSpaceObject ],
                
   function( source, matrix, range )
-    local vector_space_morphism, homalg_field, category;
+    local category;
+    #% CAP_JIT_RESOLVE_FUNCTION
     
     category := CapCategory( source );
     
     if not IsIdenticalObj( category, CapCategory( range ) ) then
-      
-      return Error( "source and range are not defined over identical categories" );
-      
+        
+        Error( "source and range are not defined over identical categories" );
+        
     fi;
     
-    vector_space_morphism := rec( );
-    
-    ObjectifyMorphismForCAPWithAttributes( vector_space_morphism, category,
-                                           Source, source,
-                                           Range, range,
-                                           UnderlyingMatrix, matrix
+    return ObjectifyMorphismWithSourceAndRangeForCAPWithAttributes( rec(), category,
+                                                                    source,
+                                                                    range,
+                                                                    UnderlyingMatrix, matrix
     );
-    
-    return vector_space_morphism;
     
 end );
 

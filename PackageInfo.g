@@ -76,7 +76,9 @@ Dependencies := rec(
                            [ "MonoidalCategories", ">= 2019.01.16" ],
                            ],
   SuggestedOtherPackages := [ ],
-  ExternalConditions := [ ],
+  ExternalConditions := [
+                            [ "CompilerForCAP", ">= 2020.07.06" ],
+                        ],
 ),
 
 AvailabilityTest := function()
